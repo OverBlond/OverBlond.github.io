@@ -3,7 +3,6 @@ let setNumber = 1;
 let successCount = 0;
 let failureCount = 0;
 let restAttempts = 0;
-let progressData = JSON.parse(localStorage.getItem('progressData')) || [];
 
 const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
@@ -15,7 +14,7 @@ const decreaseBtn = document.getElementById('decrease-btn');
 const maxRepInput = document.getElementById('max');
 
 function startWorkout() {
-  current1RM = parseFloat(maxRepInput.value); // Ensure this reads the latest value
+  current1RM = parseFloat(maxRepInput.value);
 
   if (isNaN(current1RM) || current1RM <= 0) {
     alert("Please enter a valid 1RM.");
@@ -136,12 +135,3 @@ decreaseBtn.addEventListener('click', () => {
     current1RM = new1RM;
   }
 });
-
-// Progress reset function to clear stored data
-function resetProgress() {
-  if (confirm("Are you sure you want to reset your progress?")) {
-    localStorage.removeItem('progressData');
-    progressData = [];
-    alert("Progress has been reset.");
-  }
-}
