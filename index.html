@@ -11,15 +11,16 @@
   <div class="container">
     <h1>Workout Routine</h1>
     <div class="card">
-      <label for="max-rep">Enter Your Max Rep (1RM)</label>
+      <label for="max">Enter Your Max Rep (1RM)</label>
       <div class="number-input-container">
         <button class="spinner-btn" id="decrease-btn">-</button>
-        <input type="number" id="rep-count" value="135" disabled />
+        <input type="number" id="max" value="135" />
         <button class="spinner-btn" id="increase-btn">+</button>
       </div>
-      <button id="submit-btn">Start Routine</button>
-      <div class="button-group">
-        <button class="danger" id="reset-btn">Reset</button>
+      <button id="start" onclick="startWorkout()">Start Routine</button>
+      <div id="workout" style="display: none;">
+        <p id="setInfo"></p>
+        <!-- Add other workout-related content here -->
       </div>
     </div>
   </div>
