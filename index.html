@@ -7,26 +7,28 @@
   <title>Failure-Based Bench Press Tracker</title>
 </head>
 <body>
-  <h1>Bench Press to True Failure</h1>
-
-  <!-- Start Section -->
-  <div id="start">
-    <label for="max">Enter Your 1 Rep Max (lbs):</label>
-    <div class="number-input-container">
-      <button class="spinner-btn" id="decrease-btn">-</button>
-      <input type="number" id="max" value="135" />
-      <button class="spinner-btn" id="increase-btn">+</button>
+  <div class="container">
+    <h1>Bench Press to True Failure</h1>
+  
+    <!-- Start Section -->
+    <div id="start" class="card">
+      <label for="max">Enter Your 1 Rep Max (lbs):</label>
+      <div class="number-input-container">
+        <button class="spinner-btn" id="decrease-btn">-</button>
+        <input type="number" id="max" value="135" />
+        <button class="spinner-btn" id="increase-btn">+</button>
+      </div>
+      <button onclick="startWorkout()">Start Workout</button>
+      <button onclick="resetProgress()">Reset Progress</button>
     </div>
-    <button onclick="startWorkout()">Start Workout</button>
-    <button onclick="resetProgress()">Reset Progress</button>
-  </div>
 
-  <!-- Workout Section -->
-  <div id="workout" style="display:none;">
-    <h2>Workout Plan</h2>
-    <p id="setInfo">Set details will appear here</p>
-    <button onclick="completeSet('success')">Completed</button>
-    <button onclick="completeSet('failure')">Failed</button>
+    <!-- Workout Section -->
+    <div id="workout" style="display:none;" class="card">
+      <h2>Workout Plan</h2>
+      <p id="setInfo">Set details will appear here</p>
+      <button onclick="completeSet('success')">Completed</button>
+      <button onclick="completeSet('failure')">Failed</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
