@@ -15,7 +15,7 @@ const decreaseBtn = document.getElementById('decrease-btn');
 const maxRepInput = document.getElementById('max');
 
 function startWorkout() {
-  current1RM = parseFloat(maxRepInput.value);
+  current1RM = parseFloat(maxRepInput.value); // Ensure this reads the latest value
 
   if (isNaN(current1RM) || current1RM <= 0) {
     alert("Please enter a valid 1RM.");
@@ -122,13 +122,15 @@ function resetWorkout() {
 
 // Increase and decrease the 1RM input by 5 pounds (plate weight increments)
 increaseBtn.addEventListener('click', () => {
-  let new1RM = parseFloat(maxRepInput.value) + 5;  // Increase by 5 lbs
+  let currentValue = parseFloat(maxRepInput.value) || 0; // Get the current value of 1RM input
+  let new1RM = currentValue + 5;  // Increase by 5 lbs
   maxRepInput.value = new1RM;
   current1RM = new1RM;
 });
 
 decreaseBtn.addEventListener('click', () => {
-  let new1RM = parseFloat(maxRepInput.value) - 5;  // Decrease by 5 lbs
+  let currentValue = parseFloat(maxRepInput.value) || 0; // Get the current value of 1RM input
+  let new1RM = currentValue - 5;  // Decrease by 5 lbs
   if (new1RM >= 45) {  // Prevent going below the barbell weight (45 lbs)
     maxRepInput.value = new1RM;
     current1RM = new1RM;
