@@ -68,7 +68,7 @@ function calculatePlates(weight) {
     }
   }
 
-  return plates.length ? plates.join(' + ') : "Bar only";
+  return plates.length ? plates.join(' + ') + ' (each side)' : "Bar only";
 }
 
 function completeSet(result) {
