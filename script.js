@@ -3,6 +3,7 @@ let setNumber = 1;
 let successCount = 0;
 let failureCount = 0;
 let restAttempts = 0;
+let currentWeight;  // This will hold the current working weight
 
 const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
@@ -28,12 +29,17 @@ function nextSet() {
     return;
   }
 
+  // Calculate target weight based on percentage of 1RM for the current set
   const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
-  const adjustedWeight = adjustToClosestPlateWeight(targetWeight);
+  
+  // Set current working weight based on adjusted target weight
+  currentWeight = adjustToClosestPlateWeight(targetWeight);
+  
   const reps = setReps[setNumber - 1];
-  const weightWithPlates = calculatePlates(adjustedWeight);
+  const weightWithPlates = calculatePlates(currentWeight);
 
-  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  // Display current set information
+  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${currentWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
 }
 
@@ -44,6 +50,7 @@ function adjustToClosestPlateWeight(weight) {
   
   if (remainingWeight < 0) return barWeight;
 
+  // Adjust the weight using available plates
   for (let plate of plateWeights) {
     while (remainingWeight >= plate * 2) {
       adjustedWeight += plate * 2;
@@ -55,7 +62,7 @@ function adjustToClosestPlateWeight(weight) {
 }
 
 function calculatePlates(weight) {
-  let remainingWeight = (weight - 45) / 2; 
+  let remainingWeight = (weight - 45) / 2; // Subtract bar weight and split per side
   if (remainingWeight < 0) return "Bar only";
 
   const plates = [];
@@ -80,16 +87,22 @@ function completeSet(result) {
   } else {
     failureCount++;
     restAttempts++;
-    document.getElementById('feedback').innerText = "You failed, try again or reduce weight.";
-    
+    document.getElementById('feedback').innerText = "You failed, trying with reduced weight and lower reps.";
+
+    // Adjust weight and reps after failure
     if (restAttempts < 2) {
-      alert("Rest and try again with the same weight.");
+      // Decrease weight by 10% and round correctly
+      const reducedWeight = Math.round(currentWeight * 0.9);
+      currentWeight = adjustToClosestPlateWeight(reducedWeight);  // Update the current weight
+      const newReps = Math.max(setReps[setNumber - 2] - 1, 1);  // Reduce reps by 1, but not below 1
+      document.getElementById('setInfo').innerText = `Try again: ${currentWeight} lbs for ${newReps} reps.`;
+      restAttempts = 0;
     } else {
-      // Decrease weight by 10% and round to nearest achievable weight
-      const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
-      const adjustedReducedWeight = adjustToClosestPlateWeight(reducedWeight);
-      alert(`Lowering weight by 10%. Try ${adjustedReducedWeight} lbs now.`);
-      setPercentages[setNumber - 2] *= 0.9;
+      // If after two failures, adjust the weight by 10% and reduce reps
+      const reducedWeight = Math.round(currentWeight * 0.9);
+      currentWeight = adjustToClosestPlateWeight(reducedWeight);  // Update the current weight
+      const newReps = Math.max(setReps[setNumber - 2] - 1, 1);  // Reduce reps by 1, but not below 1
+      document.getElementById('setInfo').innerText = `Lower weight: ${currentWeight} lbs for ${newReps} reps.`;
       restAttempts = 0;
     }
   }
@@ -98,13 +111,13 @@ function completeSet(result) {
 function adjustNextWorkout() {
   if (successCount >= 3) {
     current1RM += 7.5;
-    alert(`Great job! Your 1RM has increased to ${current1RM} lbs.`);
+    document.getElementById('feedback').innerText = `Great job! Your 1RM has increased to ${current1RM} lbs.`;
   } else if (failureCount >= 2) {
     current1RM -= 2.5;
-    alert(`Your 1RM has been adjusted to ${current1RM} lbs.`);
+    document.getElementById('feedback').innerText = `Your 1RM has been adjusted to ${current1RM} lbs.`;
   } else {
     current1RM += 5;
-    alert(`Your 1RM is now ${current1RM} lbs.`);
+    document.getElementById('feedback').innerText = `Your 1RM is now ${current1RM} lbs.`;
   }
   resetWorkout();
 }
