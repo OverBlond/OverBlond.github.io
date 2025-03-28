@@ -85,8 +85,10 @@ function completeSet(result) {
     if (restAttempts < 2) {
       alert("Rest and try again with the same weight.");
     } else {
+      // Decrease weight by 10% and round to nearest achievable weight
       const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
-      alert(`Lowering weight by 10%. Try ${reducedWeight} lbs now.`);
+      const adjustedReducedWeight = adjustToClosestPlateWeight(reducedWeight);
+      alert(`Lowering weight by 10%. Try ${adjustedReducedWeight} lbs now.`);
       setPercentages[setNumber - 2] *= 0.9;
       restAttempts = 0;
     }
