@@ -3,18 +3,14 @@ let setNumber = 1;
 let successCount = 0;
 let failureCount = 0;
 let restAttempts = 0;
+let progressData = JSON.parse(localStorage.getItem('progressData')) || [];
 
 const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
 const plateWeights = [45, 25, 10, 5, 2.5];
 
-// Get references to the spinner buttons and the 1RM input
-const increaseBtn = document.getElementById('increase-btn');
-const decreaseBtn = document.getElementById('decrease-btn');
-const maxRepInput = document.getElementById('max');
-
 function startWorkout() {
-  current1RM = parseFloat(maxRepInput.value);
+  current1RM = parseFloat(document.getElementById('max').value);
 
   if (isNaN(current1RM) || current1RM <= 0) {
     alert("Please enter a valid 1RM.");
@@ -46,7 +42,7 @@ function adjustToClosestPlateWeight(weight) {
   const barWeight = 45;
   let remainingWeight = weight - barWeight;
   let adjustedWeight = barWeight;
-
+  
   if (remainingWeight < 0) return barWeight;
 
   for (let plate of plateWeights) {
@@ -89,8 +85,9 @@ function completeSet(result) {
       alert("Rest and try again with the same weight.");
     } else {
       const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
-      alert(`Lowering weight by 10%. Try ${reducedWeight} lbs now.`);
-      setPercentages[setNumber - 2] *= 0.9;
+      const adjustedWeight = adjustToClosestPlateWeight(reducedWeight);  // Adjust the reduced weight
+      alert(`Lowering weight by 10%. Try ${adjustedWeight} lbs now.`);
+      current1RM = adjustedWeight;  // Update the 1RM with the adjusted weight
       restAttempts = 0;
     }
   }
@@ -119,19 +116,10 @@ function resetWorkout() {
   document.getElementById('workout').style.display = 'none';
 }
 
-// Increase and decrease the 1RM input by 5 pounds (plate weight increments)
-increaseBtn.addEventListener('click', () => {
-  let currentValue = parseFloat(maxRepInput.value) || 0; // Get the current value of 1RM input
-  let new1RM = currentValue + 5;  // Increase by 5 lbs
-  maxRepInput.value = new1RM;
-  current1RM = new1RM;
-});
-
-decreaseBtn.addEventListener('click', () => {
-  let currentValue = parseFloat(maxRepInput.value) || 0; // Get the current value of 1RM input
-  let new1RM = currentValue - 5;  // Decrease by 5 lbs
-  if (new1RM >= 45) {  // Prevent going below the barbell weight (45 lbs)
-    maxRepInput.value = new1RM;
-    current1RM = new1RM;
+function resetProgress() {
+  if (confirm("Are you sure you want to reset your progress?")) {
+    localStorage.removeItem('progressData');
+    progressData = [];
+    alert("Progress has been reset.");
   }
-});
+}
