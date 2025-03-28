@@ -16,20 +16,26 @@ const decreaseBtn = document.getElementById('decrease-btn');
 const increaseBtn = document.getElementById('increase-btn');
 const setInfoText = document.getElementById('setInfo');
 
-// Add event listeners to the spinner buttons
+// Event listeners for the spinner buttons
 decreaseBtn.addEventListener('click', () => {
-  current1RM = parseFloat(maxInput.value);
-  if (!isNaN(current1RM) && current1RM > 0) {
-    maxInput.value = Math.max(45, current1RM - 2.5); // Decrease by 2.5 lbs but not below 45
-  }
+  update1RM('decrease');
 });
 
 increaseBtn.addEventListener('click', () => {
+  update1RM('increase');
+});
+
+function update1RM(action) {
   current1RM = parseFloat(maxInput.value);
   if (!isNaN(current1RM) && current1RM > 0) {
-    maxInput.value = current1RM + 2.5; // Increase by 2.5 lbs
+    const increment = 2.5;
+    if (action === 'decrease') {
+      maxInput.value = Math.max(45, current1RM - increment); // Decrease by 2.5 lbs, but not below 45
+    } else if (action === 'increase') {
+      maxInput.value = current1RM + increment; // Increase by 2.5 lbs
+    }
   }
-});
+}
 
 function startWorkout() {
   current1RM = parseFloat(maxInput.value);
@@ -52,7 +58,7 @@ function nextSet() {
   }
 
   const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
-  currentWeight = adjustToClosestPlateWeight(targetWeight); // Use adjusted weight for display
+  currentWeight = adjustToClosestPlateWeight(targetWeight); // Adjust weight to closest achievable
   const reps = setReps[setNumber - 1];
   const weightWithPlates = calculatePlates(currentWeight);
 
@@ -64,7 +70,7 @@ function adjustToClosestPlateWeight(weight) {
   const barWeight = 45;
   let remainingWeight = weight - barWeight;
   let adjustedWeight = barWeight;
-  
+
   if (remainingWeight < 0) return barWeight;
 
   for (let plate of plateWeights) {
@@ -104,14 +110,14 @@ function completeSet(result) {
     restAttempts++;
 
     if (restAttempts < 2) {
-      alert("Rest and try again with the same weight.");
+      setInfoText.innerText = `Failed! Rest and try again with the same weight.`;
     } else {
-      const reducedWeight = Math.round(currentWeight * 0.9); // Decrease weight by 10%
+      const reducedWeight = Math.round(currentWeight * 0.9); // Reduce weight by 10%
       currentWeight = adjustToClosestPlateWeight(reducedWeight); // Adjust weight after reduction
 
       setInfoText.innerText = `Failed! Lowering weight by 10%. Try ${currentWeight} lbs now.`;
 
-      restAttempts = 0; // Reset rest attempts after reducing the weight
+      restAttempts = 0; // Reset rest attempts after lowering weight
     }
   }
 }
