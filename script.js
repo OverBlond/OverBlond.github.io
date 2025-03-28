@@ -1,116 +1,144 @@
-/* Global styles */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #121212; /* Dark background */
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  flex-direction: column;
+let current1RM;
+let setNumber = 1;
+let successCount = 0;
+let failureCount = 0;
+let restAttempts = 0;
+let progressData = JSON.parse(localStorage.getItem('progressData')) || [];
+
+const setPercentages = [0.7, 0.75, 0.8, 0.85];
+const setReps = [8, 6, 4, 3];
+const plateWeights = [45, 25, 10, 5, 2.5];
+
+const maxInput = document.getElementById('max');
+const decreaseBtn = document.getElementById('decrease-btn');
+const increaseBtn = document.getElementById('increase-btn');
+
+// Add event listeners to the spinner buttons
+decreaseBtn.addEventListener('click', () => {
+  current1RM = parseFloat(maxInput.value);
+  if (!isNaN(current1RM) && current1RM > 0) {
+    maxInput.value = Math.max(45, current1RM - 2.5); // Decrease by 2.5 lbs but not below 45
+  }
+});
+
+increaseBtn.addEventListener('click', () => {
+  current1RM = parseFloat(maxInput.value);
+  if (!isNaN(current1RM) && current1RM > 0) {
+    maxInput.value = current1RM + 2.5; // Increase by 2.5 lbs
+  }
+});
+
+function startWorkout() {
+  current1RM = parseFloat(maxInput.value);
+
+  if (isNaN(current1RM) || current1RM <= 0) {
+    alert("Please enter a valid 1RM.");
+    return;
+  }
+
+  document.getElementById('start').style.display = 'none';
+  document.getElementById('workout').style.display = 'block';
+  nextSet();
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #9b59b6; /* Purple color */
+function nextSet() {
+  if (setNumber > setPercentages.length) {
+    alert("Workout Complete! Adjustments will be made.");
+    adjustNextWorkout();
+    return;
+  }
+
+  const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
+  const adjustedWeight = adjustToClosestPlateWeight(targetWeight);
+  const reps = setReps[setNumber - 1];
+  const weightWithPlates = calculatePlates(adjustedWeight);
+
+  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  setNumber++;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+function adjustToClosestPlateWeight(weight) {
+  const barWeight = 45;
+  let remainingWeight = weight - barWeight;
+  let adjustedWeight = barWeight;
+  
+  if (remainingWeight < 0) return barWeight;
+
+  for (let plate of plateWeights) {
+    while (remainingWeight >= plate * 2) {
+      adjustedWeight += plate * 2;
+      remainingWeight -= plate * 2;
+    }
+  }
+
+  return adjustedWeight;
 }
 
-/* Card styling */
-.card {
-  background-color: #1e1e1e; /* Dark card background */
-  padding: 20px;
-  margin: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  width: 300px;
+function calculatePlates(weight) {
+  let remainingWeight = (weight - 45) / 2; // Subtract bar weight and split per side
+  if (remainingWeight < 0) return "Bar only";
+
+  const plates = [];
+
+  for (let plate of plateWeights) {
+    while (remainingWeight >= plate) {
+      plates.push(`${plate} lbs`);
+      remainingWeight -= plate;
+    }
+  }
+
+  return plates.length ? plates.join(' + ') + ' (each side)' : "Bar only";
 }
 
-/* Input field for number */
-input[type="number"] {
-  padding: 10px;
-  font-size: 1.2rem;
-  width: 100px;
-  text-align: center;
-  background-color: #333;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  outline: none;
-  margin: 0 10px;
+function completeSet(result) {
+  if (result === 'success') {
+    successCount++;
+    failureCount = 0;
+    restAttempts = 0;
+    nextSet();
+  } else {
+    failureCount++;
+    restAttempts++;
+    
+    if (restAttempts < 2) {
+      alert("Rest and try again with the same weight.");
+    } else {
+      const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
+      const adjustedWeight = adjustToClosestPlateWeight(reducedWeight);  // Adjust the reduced weight
+      alert(`Lowering weight by 10%. Try ${adjustedWeight} lbs now.`);
+      current1RM = adjustedWeight;  // Update the 1RM with the adjusted weight
+      restAttempts = 0;
+    }
+  }
 }
 
-/* Remove default increment/decrement buttons in number input */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+function adjustNextWorkout() {
+  if (successCount >= 3) {
+    current1RM += 7.5;
+    alert(`Great job! Your 1RM has increased to ${current1RM} lbs.`);
+  } else if (failureCount >= 2) {
+    current1RM -= 2.5;
+    alert(`Your 1RM has been adjusted to ${current1RM} lbs.`);
+  } else {
+    current1RM += 5;
+    alert(`Your 1RM is now ${current1RM} lbs.`);
+  }
+  resetWorkout();
 }
 
-input[type="number"]:focus {
-  border: 2px solid #9b59b6; /* Purple border on focus */
+function resetWorkout() {
+  setNumber = 1;
+  successCount = 0;
+  failureCount = 0;
+  restAttempts = 0;
+  document.getElementById('start').style.display = 'block';
+  document.getElementById('workout').style.display = 'none';
 }
 
-/* Spinner button styling */
-.spinner-btn {
-  background-color: #9b59b6; /* Purple button */
-  color: white;
-  font-size: 1.5rem;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.spinner-btn:hover {
-  background-color: #8e44ad; /* Darker purple when hovering */
-}
-
-/* Button styling */
-button {
-  background-color: #9b59b6; /* Purple background */
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-  width: 100%;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #8e44ad; /* Darker purple when hovering */
-}
-
-button:disabled {
-  background-color: #555;
-}
-
-/* Aligning the spinner buttons */
-.number-input-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-/* Style for workout section buttons */
-button + button {
-  margin-top: 10px;
-}
-
-/* Styling the buttons to be full width inside cards */
-.card button {
-  width: 100%;
-  margin-top: 10px;
+function resetProgress() {
+  if (confirm("Are you sure you want to reset your progress?")) {
+    localStorage.removeItem('progressData');
+    progressData = [];
+    alert("Progress has been reset.");
+  }
 }
