@@ -5,9 +5,9 @@ let failureCount = 0;
 let restAttempts = 0;
 let progressData = JSON.parse(localStorage.getItem('progressData')) || [];
 
-// Set percentages and reps for failure focus
 const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
+const plateWeights = [45, 25, 10, 5, 2.5];
 
 function startWorkout() {
   current1RM = parseFloat(document.getElementById('max').value);
@@ -29,31 +29,44 @@ function nextSet() {
     return;
   }
 
-  const weight = Math.round(current1RM * setPercentages[setNumber - 1]);
+  const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
   const reps = setReps[setNumber - 1];
+  const weightWithPlates = calculatePlates(targetWeight);
 
-  document.getElementById('setInfo').innerText = 
-    `Set ${setNumber}: ${weight} lbs for ${reps} reps`;
-
+  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${targetWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
 }
 
+function calculatePlates(weight) {
+  let remainingWeight = (weight - 45) / 2; // Subtract bar weight and split per side
+  if (remainingWeight < 0) return "Bar only";
+
+  const plates = [];
+
+  for (let plate of plateWeights) {
+    while (remainingWeight >= plate) {
+      plates.push(`${plate} lbs`);
+      remainingWeight -= plate;
+    }
+  }
+
+  return plates.length ? plates.join(' + ') : "Bar only";
+}
+
 function completeSet(result) {
-  const currentWeight = Math.round(current1RM * setPercentages[setNumber - 2]);
-  
   if (result === 'success') {
     successCount++;
     failureCount = 0;
     restAttempts = 0;
     nextSet();
-  } else if (result === 'failure') {
+  } else {
     failureCount++;
     restAttempts++;
-
+    
     if (restAttempts < 2) {
-      alert("Rest for 2-3 minutes and try again with the same weight.");
+      alert("Rest and try again with the same weight.");
     } else {
-      const reducedWeight = Math.round(currentWeight * 0.9);
+      const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
       alert(`Lowering weight by 10%. Try ${reducedWeight} lbs now.`);
       setPercentages[setNumber - 2] *= 0.9;
       restAttempts = 0;
@@ -63,18 +76,15 @@ function completeSet(result) {
 
 function adjustNextWorkout() {
   if (successCount >= 3) {
-    current1RM += 7.5; // Bigger increase for strength
+    current1RM += 7.5;
     alert(`Great job! Your 1RM has increased to ${current1RM} lbs.`);
   } else if (failureCount >= 2) {
-    current1RM -= 2.5; // Slight decrease
-    alert(`You hit failure. Adjusting your 1RM to ${current1RM} lbs.`);
+    current1RM -= 2.5;
+    alert(`Your 1RM has been adjusted to ${current1RM} lbs.`);
   } else {
-    current1RM += 5; // Moderate increase
-    alert(`Solid work. Your 1RM is now ${current1RM} lbs.`);
+    current1RM += 5;
+    alert(`Your 1RM is now ${current1RM} lbs.`);
   }
-
-  progressData.push(current1RM);
-  localStorage.setItem('progressData', JSON.stringify(progressData));
   resetWorkout();
 }
 
