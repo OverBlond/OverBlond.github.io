@@ -11,40 +11,15 @@ const plateWeights = [45, 25, 10, 5, 2.5];
 
 let currentWeight;
 
-const maxInput = document.getElementById('max');
-const decreaseBtn = document.getElementById('decrease-btn');
-const increaseBtn = document.getElementById('increase-btn');
-const setInfoText = document.getElementById('setInfo');
-
-// Event listeners for the spinner buttons
-decreaseBtn.addEventListener('click', () => {
-  update1RM('decrease');
-});
-
-increaseBtn.addEventListener('click', () => {
-  update1RM('increase');
-});
-
-function update1RM(action) {
-  current1RM = parseFloat(maxInput.value);
-  if (!isNaN(current1RM) && current1RM > 0) {
-    const increment = 2.5;
-    if (action === 'decrease') {
-      maxInput.value = Math.max(45, current1RM - increment); // Decrease by 2.5 lbs, but not below 45
-    } else if (action === 'increase') {
-      maxInput.value = current1RM + increment; // Increase by 2.5 lbs
-    }
-  }
-}
-
 function startWorkout() {
-  current1RM = parseFloat(maxInput.value);
+  current1RM = parseFloat(document.getElementById('max').value);
 
   if (isNaN(current1RM) || current1RM <= 0) {
     alert("Please enter a valid 1RM.");
     return;
   }
 
+  currentWeight = current1RM; // Initialize currentWeight as the entered 1RM
   document.getElementById('start').style.display = 'none';
   document.getElementById('workout').style.display = 'block';
   nextSet();
@@ -57,12 +32,12 @@ function nextSet() {
     return;
   }
 
-  const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
-  currentWeight = adjustToClosestPlateWeight(targetWeight); // Adjust weight to closest achievable
+  const targetWeight = Math.round(currentWeight * setPercentages[setNumber - 1]);
+  const adjustedWeight = adjustToClosestPlateWeight(targetWeight);
   const reps = setReps[setNumber - 1];
-  const weightWithPlates = calculatePlates(currentWeight);
+  const weightWithPlates = calculatePlates(adjustedWeight);
 
-  setInfoText.innerText = `Set ${setNumber}: ${currentWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
 }
 
@@ -70,7 +45,7 @@ function adjustToClosestPlateWeight(weight) {
   const barWeight = 45;
   let remainingWeight = weight - barWeight;
   let adjustedWeight = barWeight;
-
+  
   if (remainingWeight < 0) return barWeight;
 
   for (let plate of plateWeights) {
@@ -104,20 +79,19 @@ function completeSet(result) {
     successCount++;
     failureCount = 0;
     restAttempts = 0;
+    currentWeight = Math.round(currentWeight * 1.05); // Increase the weight by 5% on success
     nextSet();
   } else {
     failureCount++;
     restAttempts++;
-
+    
     if (restAttempts < 2) {
-      setInfoText.innerText = `Failed! Rest and try again with the same weight.`;
+      alert("Rest and try again with the same weight.");
     } else {
-      const reducedWeight = Math.round(currentWeight * 0.9); // Reduce weight by 10%
-      currentWeight = adjustToClosestPlateWeight(reducedWeight); // Adjust weight after reduction
-
-      setInfoText.innerText = `Failed! Lowering weight by 10%. Try ${currentWeight} lbs now.`;
-
-      restAttempts = 0; // Reset rest attempts after lowering weight
+      const reducedWeight = Math.round(currentWeight * 0.9); // Lower by 10% after two failures
+      alert(`Lowering weight by 10%. Try ${reducedWeight} lbs now.`);
+      currentWeight = reducedWeight; // Update to the new lower weight
+      restAttempts = 0;
     }
   }
 }
