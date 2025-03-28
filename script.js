@@ -9,8 +9,13 @@ const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
 const plateWeights = [45, 25, 10, 5, 2.5];
 
+// Get references to the spinner buttons and the 1RM input
+const increaseBtn = document.getElementById('increase-btn');
+const decreaseBtn = document.getElementById('decrease-btn');
+const maxRepInput = document.getElementById('max');
+
 function startWorkout() {
-  current1RM = parseFloat(document.getElementById('max').value);
+  current1RM = parseFloat(maxRepInput.value);
 
   if (isNaN(current1RM) || current1RM <= 0) {
     alert("Please enter a valid 1RM.");
@@ -115,6 +120,22 @@ function resetWorkout() {
   document.getElementById('workout').style.display = 'none';
 }
 
+// Increase and decrease the 1RM input by 5 pounds (plate weight increments)
+increaseBtn.addEventListener('click', () => {
+  let new1RM = parseFloat(maxRepInput.value) + 5;  // Increase by 5 lbs
+  maxRepInput.value = new1RM;
+  current1RM = new1RM;
+});
+
+decreaseBtn.addEventListener('click', () => {
+  let new1RM = parseFloat(maxRepInput.value) - 5;  // Decrease by 5 lbs
+  if (new1RM >= 45) {  // Prevent going below the barbell weight (45 lbs)
+    maxRepInput.value = new1RM;
+    current1RM = new1RM;
+  }
+});
+
+// Progress reset function to clear stored data
 function resetProgress() {
   if (confirm("Are you sure you want to reset your progress?")) {
     localStorage.removeItem('progressData');
