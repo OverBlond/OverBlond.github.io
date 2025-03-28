@@ -1,116 +1,82 @@
-/* Global styles */
+/* General Styles */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #121212; /* Dark background */
+  background-color: #121212;
   color: white;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
   flex-direction: column;
 }
 
 h1 {
-  font-size: 2rem;
+  color: #9b59b6;
   margin-bottom: 20px;
-  color: #9b59b6; /* Purple color */
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#start, #workout {
   text-align: center;
 }
 
-/* Card styling */
-.card {
-  background-color: #1e1e1e; /* Dark card background */
-  padding: 20px;
-  margin: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  width: 300px;
-}
-
-/* Input field for number */
 input[type="number"] {
   padding: 10px;
-  font-size: 1.2rem;
-  width: 100px;
-  text-align: center;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  margin: 10px;
+  width: 150px;
   background-color: #333;
-  border: none;
-  border-radius: 5px;
   color: white;
-  outline: none;
-  margin: 0 10px;
 }
 
-/* Remove default increment/decrement buttons in number input */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"]:focus {
-  border: 2px solid #9b59b6; /* Purple border on focus */
-}
-
-/* Spinner button styling */
-.spinner-btn {
-  background-color: #9b59b6; /* Purple button */
-  color: white;
-  font-size: 1.5rem;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.spinner-btn:hover {
-  background-color: #8e44ad; /* Darker purple when hovering */
-}
-
-/* Button styling */
 button {
-  background-color: #9b59b6; /* Purple background */
+  padding: 12px 20px;
+  background-color: #9b59b6;
   color: white;
-  padding: 10px 20px;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
+  margin: 10px;
   cursor: pointer;
-  margin-top: 20px;
-  width: 100%;
-  transition: background-color 0.3s;
+  transition: 0.3s;
 }
 
 button:hover {
-  background-color: #8e44ad; /* Darker purple when hovering */
+  background-color: #8e44ad;
 }
 
-button:disabled {
-  background-color: #555;
+#start button {
+  width: 200px;
 }
 
-/* Aligning the spinner buttons */
-.number-input-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+#workout button {
+  width: 150px;
 }
 
-/* Style for workout section buttons */
-button + button {
-  margin-top: 10px;
+button:focus {
+  outline: none;
 }
 
-/* Styling the buttons to be full width inside cards */
-.card button {
-  width: 100%;
-  margin-top: 10px;
+#decrease-btn, #increase-btn {
+  background-color: #9b59b6;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 10px;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+#decrease-btn:active, #increase-btn:active {
+  background-color: #8e44ad;
+}
+
+#workout #setInfo {
+  margin: 20px 0;
+  font-size: 18px;
 }
