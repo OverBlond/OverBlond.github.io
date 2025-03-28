@@ -9,6 +9,8 @@ const setPercentages = [0.7, 0.75, 0.8, 0.85];
 const setReps = [8, 6, 4, 3];
 const plateWeights = [45, 25, 10, 5, 2.5];
 
+let currentWeight;
+
 const maxInput = document.getElementById('max');
 const decreaseBtn = document.getElementById('decrease-btn');
 const increaseBtn = document.getElementById('increase-btn');
@@ -50,11 +52,11 @@ function nextSet() {
   }
 
   const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
-  const adjustedWeight = adjustToClosestPlateWeight(targetWeight);
+  currentWeight = adjustToClosestPlateWeight(targetWeight); // Use adjusted weight for display
   const reps = setReps[setNumber - 1];
-  const weightWithPlates = calculatePlates(adjustedWeight);
+  const weightWithPlates = calculatePlates(currentWeight);
 
-  setInfoText.innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  setInfoText.innerText = `Set ${setNumber}: ${currentWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
 }
 
@@ -100,18 +102,16 @@ function completeSet(result) {
   } else {
     failureCount++;
     restAttempts++;
-    
+
     if (restAttempts < 2) {
       alert("Rest and try again with the same weight.");
     } else {
-      const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
-      const adjustedWeight = adjustToClosestPlateWeight(reducedWeight);  // Adjust the reduced weight
+      const reducedWeight = Math.round(currentWeight * 0.9); // Decrease weight by 10%
+      currentWeight = adjustToClosestPlateWeight(reducedWeight); // Adjust weight after reduction
 
-      // Display the new weight in the failure message dynamically
-      setInfoText.innerText = `Failed! Lowering weight by 10%. Try ${adjustedWeight} lbs now.`;
+      setInfoText.innerText = `Failed! Lowering weight by 10%. Try ${currentWeight} lbs now.`;
 
-      current1RM = adjustedWeight;  // Update the 1RM with the adjusted weight
-      restAttempts = 0;
+      restAttempts = 0; // Reset rest attempts after reducing the weight
     }
   }
 }
