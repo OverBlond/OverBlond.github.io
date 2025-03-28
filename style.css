@@ -1,82 +1,68 @@
-/* General Styles */
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #121212;
-  color: white;
-  margin: 0;
-  padding: 0;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
 }
 
 h1 {
-  color: #9b59b6;
+  color: #9b4dca;
+  font-size: 2rem;
+}
+
+button {
+  background-color: #9b4dca;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px;
+  transition: background-color 0.3s ease;
+  width: auto;  /* Make the button width auto-adjusted */
+  min-width: 120px; /* Ensure a minimum width for consistency */
+}
+
+button:hover {
+  background-color: #7c3d8c;
+}
+
+input {
+  padding: 10px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  margin-right: 10px;
+  width: 100px;
+  border: 2px solid #9b4dca;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
+}
+
+.spinner-container button {
+  background-color: #9b4dca;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  margin-left: 10px;
 }
 
 #start, #workout {
   text-align: center;
 }
 
-input[type="number"] {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
-  margin: 10px;
-  width: 150px;
-  background-color: #333;
-  color: white;
-}
-
-button {
-  padding: 12px 20px;
-  background-color: #9b59b6;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  margin: 10px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background-color: #8e44ad;
-}
-
-#start button {
-  width: 200px;
-}
-
-#workout button {
-  width: 150px;
-}
-
-button:focus {
-  outline: none;
-}
-
-#decrease-btn, #increase-btn {
-  background-color: #9b59b6;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: inline-block;
-  margin: 10px;
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
-}
-
-#decrease-btn:active, #increase-btn:active {
-  background-color: #8e44ad;
-}
-
-#workout #setInfo {
-  margin: 20px 0;
-  font-size: 18px;
+#workout {
+  display: none;
 }
