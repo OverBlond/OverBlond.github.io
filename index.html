@@ -7,18 +7,26 @@
   <title>Failure-Based Bench Press Tracker</title>
 </head>
 <body>
-  <h1>Bench Press to True Failure</h1>
+  <div class="container">
+    <h1>Bench Press to True Failure</h1>
 
-  <!-- Start Section -->
-  <div id="start">
-    <label for="max">Enter Your 1 Rep Max (lbs):</label>
-    <input type="number" id="max" />
-  </div>
+    <!-- Start Section -->
+    <div id="start" class="section">
+      <label for="max">Enter Your 1 Rep Max (lbs):</label>
+      <input type="number" id="max" placeholder="e.g. 135" />
+      <button class="start-btn" onclick="startWorkout()">Start Workout</button>
+    </div>
 
-  <!-- Workout Section -->
-  <div id="workout" style="display:none;">
-    <h2>Workout Plan</h2>
-    <p id="setInfo">Set details will appear here</p>
+    <!-- Workout Section -->
+    <div id="workout" class="section" style="display:none;">
+      <h2>Workout Plan</h2>
+      <p id="setInfo">Set details will appear here</p>
+      <p id="feedback"></p>
+      <div id="controls">
+        <button class="success-btn" onclick="completeSet('success')">Success</button>
+        <button class="failure-btn" onclick="completeSet('failure')">Failure</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
