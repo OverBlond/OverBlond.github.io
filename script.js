@@ -30,11 +30,29 @@ function nextSet() {
   }
 
   const targetWeight = Math.round(current1RM * setPercentages[setNumber - 1]);
+  const adjustedWeight = adjustToClosestPlateWeight(targetWeight);
   const reps = setReps[setNumber - 1];
-  const weightWithPlates = calculatePlates(targetWeight);
+  const weightWithPlates = calculatePlates(adjustedWeight);
 
-  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${targetWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
+}
+
+function adjustToClosestPlateWeight(weight) {
+  const barWeight = 45;
+  let remainingWeight = weight - barWeight;
+  let adjustedWeight = barWeight;
+  
+  if (remainingWeight < 0) return barWeight;
+
+  for (let plate of plateWeights) {
+    while (remainingWeight >= plate * 2) {
+      adjustedWeight += plate * 2;
+      remainingWeight -= plate * 2;
+    }
+  }
+
+  return adjustedWeight;
 }
 
 function calculatePlates(weight) {
