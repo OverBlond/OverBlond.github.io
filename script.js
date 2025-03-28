@@ -83,6 +83,9 @@ function completeSet(result) {
     failureCount = 0;
     restAttempts = 0;
     document.getElementById('feedback').innerText = "Great job! You're progressing.";
+    
+    // If success with the current weight, keep using that weight for the next sets
+    // Update the weight to the successful one for next set
     nextSet();
   } else {
     failureCount++;
