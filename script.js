@@ -42,7 +42,7 @@ function adjustToClosestPlateWeight(weight) {
   const barWeight = 45;
   let remainingWeight = weight - barWeight;
   let adjustedWeight = barWeight;
-  
+
   if (remainingWeight < 0) return barWeight;
 
   for (let plate of plateWeights) {
