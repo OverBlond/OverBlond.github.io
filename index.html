@@ -12,23 +12,13 @@
   <!-- Start Section -->
   <div id="start">
     <label for="max">Enter Your 1 Rep Max (lbs):</label>
-    <div class="input-container">
-      <input type="number" id="max" />
-      <div class="spinner-container">
-        <button id="decrease-btn">-</button>
-        <button id="increase-btn">+</button>
-      </div>
-    </div>
-    <button onclick="startWorkout()">Start Workout</button>
-    <button onclick="resetProgress()">Reset Progress</button>
+    <input type="number" id="max" />
   </div>
 
   <!-- Workout Section -->
   <div id="workout" style="display:none;">
     <h2>Workout Plan</h2>
     <p id="setInfo">Set details will appear here</p>
-    <button onclick="completeSet('success')">Succeeded</button>
-    <button onclick="completeSet('failure')">Failed</button>
   </div>
 
   <script src="script.js"></script>
