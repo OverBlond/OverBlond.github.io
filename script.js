@@ -12,6 +12,7 @@ const plateWeights = [45, 25, 10, 5, 2.5];
 const maxInput = document.getElementById('max');
 const decreaseBtn = document.getElementById('decrease-btn');
 const increaseBtn = document.getElementById('increase-btn');
+const setInfoText = document.getElementById('setInfo');
 
 // Add event listeners to the spinner buttons
 decreaseBtn.addEventListener('click', () => {
@@ -53,7 +54,7 @@ function nextSet() {
   const reps = setReps[setNumber - 1];
   const weightWithPlates = calculatePlates(adjustedWeight);
 
-  document.getElementById('setInfo').innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
+  setInfoText.innerText = `Set ${setNumber}: ${adjustedWeight} lbs (${weightWithPlates}) for ${reps} reps`;
   setNumber++;
 }
 
@@ -105,7 +106,10 @@ function completeSet(result) {
     } else {
       const reducedWeight = Math.round(current1RM * setPercentages[setNumber - 2] * 0.9);
       const adjustedWeight = adjustToClosestPlateWeight(reducedWeight);  // Adjust the reduced weight
-      alert(`Lowering weight by 10%. Try ${adjustedWeight} lbs now.`);
+
+      // Display the new weight in the failure message dynamically
+      setInfoText.innerText = `Failed! Lowering weight by 10%. Try ${adjustedWeight} lbs now.`;
+
       current1RM = adjustedWeight;  // Update the 1RM with the adjusted weight
       restAttempts = 0;
     }
